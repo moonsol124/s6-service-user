@@ -29,13 +29,13 @@ jobs:
       - name: Build and Push User Service Image
         uses: docker/build-push-action@v5
         with:
-          # IMPORTANT: Set the context to the user-service directory
-          context: ./user-service # Build from the user-service subdirectory
-          file: ./user-service/Dockerfile # Path to the Dockerfile within that context
+          context: ./user-service
+          file: ./user-service/Dockerfile
           push: true
+          # --- FIX IS HERE ---
           tags: |
-            # Use a distinct image name
             moonsol124/user-service:latest
             moonsol124/user-service:${{ github.sha }}
+          # --- END OF FIX ---
           cache-from: type=gha
           cache-to: type=gha,mode=max
