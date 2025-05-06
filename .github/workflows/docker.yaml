@@ -35,7 +35,7 @@ jobs:
           push: true
           tags: |
             # Use a distinct image name
-            ${{ secrets.DOCKERHUB_USERNAME }}/user-service:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/user-service:${{ github.sha }}
+            moonsol124/user-service:latest
+            moonsol124/user-service:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
