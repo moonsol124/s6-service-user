@@ -26,16 +26,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and Push User Service Image
+      # Step 4: Build the Docker image and push it to Docker Hub
+      - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./user-service
-          file: ./user-service/Dockerfile
-          push: true
-          # --- FIX IS HERE ---
+          context: . # Use the current directory as build context
+          file: ./Dockerfile # Path to the Dockerfile
+          push: true # Actually push the image
+          # Tag the image with 'latest' and optionally the Git SHA
           tags: |
-            moonsol124/user-service:latest
-            moonsol124/user-service:${{ github.sha }}
-          # --- END OF FIX ---
+            ${{ secrets.DOCKERHUB_USERNAME }}/user-service:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/user-service:${{ github.sha }}
+          # Enable build cache for faster builds (using GitHub cache)
           cache-from: type=gha
           cache-to: type=gha,mode=max
