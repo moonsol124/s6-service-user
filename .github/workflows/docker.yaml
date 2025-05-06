@@ -6,7 +6,7 @@ on:
     branches: [ main ]
     paths: # Optional: Trigger only if files in user-service directory change
       - 'user-service/**'
-      - '.github/workflows/docker-publish-user-service.yml' 
+      - '.github/workflows/docker.yaml' 
   workflow_dispatch:
 
 jobs:
