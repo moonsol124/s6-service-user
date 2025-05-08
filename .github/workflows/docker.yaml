@@ -4,9 +4,6 @@ name: Build and Push Docker Image (User Service)
 on:
   push:
     branches: [ main ]
-    paths: # Optional: Trigger only if files in user-service directory change
-      - 'user-service/**'
-      - '.github/workflows/docker.yaml' 
   workflow_dispatch:
 
 jobs:
