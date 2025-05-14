@@ -1,0 +1,48 @@
+# .github/workflows/ci.yml
+name: Test User Service
+
+on:
+  push:
+    branches:
+      - main # Or your default branch
+  pull_request:
+    branches:
+      - main # Or your default branch
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x' # Or your preferred LTS version
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Optional: If your test DB doesn't persist schema across runs,
+      # you might need a step here to apply the schema.
+      # Example (using psql, requires db connection string):
+      # - name: Apply Test DB Schema
+      #   env:
+      #     DATABASE_URL: ${{ secrets.SUPABASE_TEST_DB_DIRECT_URL }} # You'd need to create this secret
+      #   run: psql $DATABASE_URL -f path/to/your/schema.sql
+
+      - name: Run tests
+        run: npm test
+        env:
+          # Pass Supabase credentials for the DEDICATED TEST database
+          # These secrets MUST point to your separate test Supabase project.
+          SUPABASE_TEST_USER_URL: ${{ secrets.SUPABASE_TEST_USER_URL }}
+          SUPABASE_TEST_USER_KEY: ${{ secrets.SUPABASE_TEST_USER_KEY }}
+          # Keep your standard environment variables as well if your app needs them during tests
+          # (though supabaseClient is now prioritizing the TEST ones if set)
+          # SUPABASE_USER_URL: ${{ secrets.SUPABASE_USER_URL }} # Your prod/dev URL if also needed
+          # SUPABASE_USER_KEY: ${{ secrets.SUPABASE_USER_KEY }} # Your prod/dev Key if also needed
+          # Set the test port explicitly if needed, though default should work
+          TEST_USER_SERVICE_PORT: 3002 # Ensure this matches what your tests expect

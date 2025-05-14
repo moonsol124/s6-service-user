@@ -1,11 +1,12 @@
-// index.js (user-service)
+// app.js (user-service)
 const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const supabase = require('./supabaseClient'); // Import the configured Supabase client
 require('dotenv').config();
 
-const app = express();
+const app = express(); // <-- THIS is the Express app instance you need to export
+
 const port = process.env.USER_SERVICE_PORT || 3001;
 
 const SALT_ROUNDS = 10;
@@ -221,7 +222,8 @@ app.put('/profiles/:userId', async (req, res) => {
                 // Do NOT update password_hash here unless it's a specific password change endpoint
             })
             .eq('id', userId) // Find the user by ID
-            .select('id, username, email, created_at, role'); // Select updated fields to return
+            // --- FIX: INCLUDE 'updated_at' IN THE SELECT LIST ---
+            .select('id, username, email, created_at, role, updated_at'); // Select updated fields to return, INCLUDING updated_at
 
         console.log(`[User Service PUT /profiles/:userId] Supabase update result for ${userId}:`, data, error);
 
@@ -300,6 +302,18 @@ app.delete('/profiles/:userId', async (req, res) => {
 });
 
 
-app.listen(port, () => {
-    console.log(`User Service listening at http://localhost:${port}`);
-});
+// --- EXPORT THE APP INSTANCE ---
+// This makes the 'app' object (your Express application) available
+// when this module is required by other files (like user.test.js).
+module.exports = app;
+
+
+// --- CONDITIONAL SERVER START ---
+// This code will ONLY run if app.js is the main file being executed directly
+// (e.g., when you run `node app.js` from the terminal).
+// It will NOT run when app.js is imported using `require('./app')` in user.test.js.
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`User Service listening at http://localhost:${port}`);
+    });
+}
