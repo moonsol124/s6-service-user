@@ -1,6 +1,6 @@
 # .github/workflows/user-service-test.yml
 
-name: User Service Integration Tests
+name: User Service Tests
 
 # This workflow runs on push events to the main branch
 on:
@@ -26,24 +26,27 @@ jobs:
 
       # Step 3: Install dependencies
       - name: Install dependencies
-        # Use 'npm ci' which is recommended for CI/CD environments
-        # It installs dependencies directly from package-lock.json
-        run: npm ci
+        run: npm ci # Use 'npm ci' which is recommended for CI/CD environments
 
-      # Step 4: Run your tests
+      # Step 4: Ensure cross-env and jest binaries are executable
+      # This step is added based on previous pipeline issues
+      - name: Ensure binaries are executable
+        run: | # Use a multi-line script for multiple chmod commands
+          chmod +x node_modules/.bin/cross-env
+          chmod +x node_modules/.bin/jest
+        shell: bash # Explicitly use bash
+
+      # Step 5: Run your tests
       - name: Run User Service Tests
-        run: npm test # Assumes you have a 'test' script in your package.json (e.g., "test": "jest")
+        run: npm test # Assumes you have a 'test' script in your package.json (e.g., "test": "cross-env ... jest ...")
         env: # Set environment variables required by your tests and app
           # Pass Supabase test credentials from GitHub Secrets
           SUPABASE_TEST_URL: ${{ secrets.SUPABASE_TEST_URL }}
           SUPABASE_TEST_KEY: ${{ secrets.SUPABASE_TEST_KEY }}
           # Set the test port (must match the port your test file attempts to use)
-          # The test file uses process.env.TEST_USER_SERVICE_PORT || '4001'
-          # So providing TEST_USER_SERVICE_PORT here is best practice.
           TEST_USER_SERVICE_PORT: 4001 # Ensure this matches the default or env var in your test file
-          # Add any other environment variables your app or tests rely on that need to be set for CI
-          # Based on your app.js/server.js output, PROPERTIES_SERVICE_URL might be needed
-          PROPERTIES_SERVICE_URL: http://localhost:9999 # Or whatever dummy URL is appropriate for tests
+          # Add any other environment variables your app or tests rely on
+          PROPERTIES_SERVICE_URL: http://localhost:9999
 
       # Optional: If your tests generate a report, you can upload it
       # - name: Upload test results

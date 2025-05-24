@@ -8,7 +8,7 @@ const supabase = require('./supabaseClient'); // Import the configured Supabase 
 require('dotenv').config();
 
 const app = express();
-const port = process.env.USER_SERVICE_PORT || 3001;
+const port = process.env.USER_SERVICE_PORT || 3001; 
 
 // Add environment variable for the Properties Service URL
 const propertiesServiceUrl = process.env.PROPERTIES_SERVICE_URL; // Reads from .env
