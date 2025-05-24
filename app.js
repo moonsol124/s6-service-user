@@ -29,7 +29,7 @@ if (!propertiesServiceUrl) {
 const SALT_ROUNDS = 10;
 
 // Middleware
-app.use(bodyParser.json());
+app.use(bodyParser.json()); 
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // --- Routes ---
