@@ -7,7 +7,7 @@ const axios = require('axios'); // <--- ADD THIS LINE
 const supabase = require('./supabaseClient'); // Import the configured Supabase client
 require('dotenv').config();
  
-const app = express();
+const app = express(); 
 const port = process.env.USER_SERVICE_PORT || 3001;  
  
 // Add environment variable for the Properties Service URL
