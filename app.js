@@ -410,7 +410,7 @@ app.get('/profiles/:userId', async (req, res) => {
 */
 
 module.exports = app; // <--- ADD THIS LINE TO EXPORT THE APP INSTANCE
-
+ 
 // // --- Start Server ---
 // app.listen(port, () => {
 //     console.log(`User Service listening at http://localhost:${port}`);
