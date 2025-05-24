@@ -1,0 +1,54 @@
+# .github/workflows/user-service-test.yml
+
+name: User Service Tests
+
+# This workflow runs on push events to the main branch
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest # Use a standard Ubuntu environment
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4 # Use the latest version of the checkout action
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v4 # Use the latest version of the setup-node action
+        with:
+          node-version: '20.x' # Specify the Node.js version you want to use (e.g., 20.x, lts/*)
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        # Use 'npm ci' which is recommended for CI/CD environments
+        # It installs dependencies directly from package-lock.json
+        run: npm ci
+
+      # Step 4: Run your tests
+      - name: Run User Service Tests
+        run: npm test # Assumes you have a 'test' script in your package.json (e.g., "test": "jest")
+        env: # Set environment variables required by your tests and app
+          # Pass Supabase test credentials from GitHub Secrets
+          SUPABASE_TEST_URL: ${{ secrets.SUPABASE_TEST_URL }}
+          SUPABASE_TEST_KEY: ${{ secrets.SUPABASE_TEST_KEY }}
+          # Set the test port (must match the port your test file attempts to use)
+          # The test file uses process.env.TEST_USER_SERVICE_PORT || '4001'
+          # So providing TEST_USER_SERVICE_PORT here is best practice.
+          TEST_USER_SERVICE_PORT: 4001 # Ensure this matches the default or env var in your test file
+          # Add any other environment variables your app or tests rely on that need to be set for CI
+          # Based on your app.js/server.js output, PROPERTIES_SERVICE_URL might be needed
+          PROPERTIES_SERVICE_URL: http://localhost:9999 # Or whatever dummy URL is appropriate for tests
+
+      # Optional: If your tests generate a report, you can upload it
+      # - name: Upload test results
+      #   if: always() # Upload even if tests fail
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: test-results
+      #     path: ./test-results.xml # Adjust path if you configure Jest to output JUnit reports
