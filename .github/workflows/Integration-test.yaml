@@ -30,12 +30,15 @@ jobs:
 
       # Step 4: Ensure cross-env and jest binaries are executable
       # This step is added based on previous pipeline issues
-      - name: Ensure binaries are executable
-        run: | # Use a multi-line script for multiple chmod commands
-          chmod +x node_modules/.bin/cross-env
-          chmod +x node_modules/.bin/jest
-        shell: bash # Explicitly use bash
 
+      - name: Ensure cross-env is executable # <--- ADD THIS STEP
+        run: chmod +x node_modules/.bin/cross-env
+        shell: bash # Explicitly use bash, as the error mentioned 'sh'
+
+      - name: Ensure jest is executable
+        run: chmod +x node_modules/.bin/jest
+        shell: bash
+        
       # Step 5: Run your tests
       - name: Run User Service Tests
         run: npm test # Assumes you have a 'test' script in your package.json (e.g., "test": "cross-env ... jest ...")
