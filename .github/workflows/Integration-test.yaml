@@ -1,6 +1,6 @@
 # .github/workflows/user-service-test.yml
 
-name: User Service Tests
+name: User Service Integration Tests
 
 # This workflow runs on push events to the main branch
 on:
